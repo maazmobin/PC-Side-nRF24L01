@@ -24,14 +24,16 @@ void setup(void) {
   
   printf_begin();
   radio.begin();
-  
+    radio.setAutoAck(1);                    // Ensure autoACK is enabled
+  radio.enableAckPayload();               // Allow optional ack payloads
+
   radio.setDataRate(RF24_250KBPS);
   //radio.setDataRate(RF24_1MBPS);
   radio.setPALevel(RF24_PA_MAX);
   radio.setChannel(70);
   
   radio.enableDynamicPayloads();
-  radio.setRetries(15,15);
+  radio.setRetries(0,15);
   radio.setCRCLength(RF24_CRC_16);
 
   radio.openWritingPipe(pipes[0]);
@@ -82,7 +84,7 @@ void nRF_receive(void) {
   if ( radio.available() ) {
         len = radio.getDynamicPayloadSize();
         radio.read(&RecvPayload,len);
-        delay(5);
+        //delay(5);
   
     RecvPayload[len] = 0; // null terminate string
     
@@ -102,11 +104,14 @@ void serial_receive(void){
         radio.openWritingPipe(pipes[1]);
         radio.openReadingPipe(0,pipes[0]);  
         radio.stopListening();
-        radio.write(&SendPayload,strlen(SendPayload));
-        
+        bool a = radio.write(&SendPayload,strlen(SendPayload));
+        if(a)
+        {
+          Serial.println("Ssent");
+        }
        // Serial.print("S:");  
-        Serial.print(SendPayload);          
-        Serial.println();
+    //    Serial.print(SendPayload);          
+     //   Serial.println();
         stringComplete = false;
        // Serial.println();
         // restore TX & Rx addr for reading  
