@@ -27,7 +27,7 @@ void setup(void) {
     radio.setAutoAck(1);                    // Ensure autoACK is enabled
   radio.enableAckPayload();               // Allow optional ack payloads
 
-  radio.setDataRate(RF24_250KBPS);
+  radio.setDataRate(RF24_1MBPS);
   //radio.setDataRate(RF24_1MBPS);
   radio.setPALevel(RF24_PA_MAX);
   radio.setChannel(70);
